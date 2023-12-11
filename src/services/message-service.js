@@ -27,12 +27,12 @@ module.exports = {
       const user2Id = req.body.user2Id;
 
       const messages = await Message.find({
-        $or: [
+        $and: [
           {
-            $and: [{ senderId: user1Id }, { receiverId: user2Id }],
+            $or: [{ senderId: user1Id }, { senderId: user2Id }],
           },
           {
-            $and: [{ senderId: user2Id }, { receiverId: user1Id }],
+            $or: [{ receiverId: user1Id }, { receiverId: user2Id }],
           },
         ],
       });
