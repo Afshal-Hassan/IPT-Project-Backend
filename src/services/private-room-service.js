@@ -4,26 +4,10 @@ const BadRequest = require("../exceptions/bad-request");
 const { MONGO_DUP_INDEX_ERROR_CODE } = require("../helpers/constant");
 
 module.exports = {
-  save: async (req, res, next) => {
-    try {
-      const privateRoom = new PrivateRoom(req.body);
-      const newPrivateRoom = await privateRoom.save();
+  save: async (privateRooms) => {
+    const newPrivateRooms = await PrivateRoom.insertMany(privateRooms);
 
-      return res
-        .status(200)
-        .send(
-          new GenericResponse(
-            "Private Room has been saved successfully",
-            newPrivateRoom
-          )
-        );
-    } catch (error) {
-      if (error.code === MONGO_DUP_INDEX_ERROR_CODE) {
-        next(new BadRequest("These users private rooms already exists"));
-      } else {
-        next(new BadRequest(error));
-      }
-    }
+    return newPrivateRooms;
   },
 
   get: async (req, res, next) => {

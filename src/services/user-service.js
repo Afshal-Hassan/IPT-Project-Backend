@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const friendService = require("../services/friend-service");
+const privateRoomService = require("../services/private-room-service");
 const BadRequest = require("../exceptions/bad-request");
 const { MONGO_DUP_INDEX_ERROR_CODE } = require("../helpers/constant");
 
@@ -27,8 +28,15 @@ module.exports = {
         friendId: u._id,
       }));
 
+      const privateRooms = existingUsers.map((u) => ({
+        user1Id: newUser._id,
+        user2Id: u._id,
+      }));
+
       friendService.save(friends1);
       friendService.save(friends2);
+
+      privateRoomService.save(privateRooms);
 
       return newUser;
     }
