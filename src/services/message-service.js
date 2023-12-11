@@ -29,16 +29,10 @@ module.exports = {
       const messages = await Message.find({
         $or: [
           {
-            senderId: user1Id,
+            $and: [{ senderId: user1Id }, { receiverId: user2Id }],
           },
           {
-            senderId: user2Id,
-          },
-          {
-            receiverId: user1Id,
-          },
-          {
-            receiverId: user2Id,
+            $and: [{ senderId: user2Id }, { receiverId: user1Id }],
           },
         ],
       });
