@@ -36,11 +36,13 @@ const messageRouter = require("./routes/message-route");
 const friendRouter = require("./routes/friend-route");
 const privateRoomRouter = require("./routes/private-room-route");
 const messageController = require("./controllers/message-controller");
+const authRouter = require("./routes/auth-route");
 
 app.use("", userRouter);
 app.use("", messageRouter);
 app.use("", friendRouter);
 app.use("", privateRoomRouter);
+app.use("", authRouter);
 
 app.get("/api/hello", (req, res) => {
   res.send("App Running");
