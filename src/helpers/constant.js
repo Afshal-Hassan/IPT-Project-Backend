@@ -1,0 +1,3 @@
+const MONGO_DUP_INDEX_ERROR_CODE = 11000;
+
+module.exports = { MONGO_DUP_INDEX_ERROR_CODE };
