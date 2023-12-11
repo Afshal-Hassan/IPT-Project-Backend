@@ -4,23 +4,9 @@ const BadRequest = require("../exceptions/bad-request");
 const { MONGO_DUP_INDEX_ERROR_CODE } = require("../helpers/constant");
 
 module.exports = {
-  save: async (req, res, next) => {
-    try {
-      const friend = new Friend(req.body);
-      const newFriends = await friend.save();
-
-      return res
-        .status(200)
-        .send(
-          new GenericResponse("Friends has been saved successfully", newFriends)
-        );
-    } catch (error) {
-      if (error.code === MONGO_DUP_INDEX_ERROR_CODE) {
-        next(new BadRequest("These users already exists as friends"));
-      } else {
-        next(new BadRequest(error));
-      }
-    }
+  save: async (friends) => {
+    const newFriends = await Friend.insertMany(friends);
+    return newFriends;
   },
 
   getAll: async (req, res, next) => {

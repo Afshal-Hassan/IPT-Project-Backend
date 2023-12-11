@@ -1,4 +1,5 @@
 const GenericResponse = require("../dto/generic-response");
+const BadRequest = require("../exceptions/bad-request");
 const authService = require("../services/auth-service");
 const userService = require("../services/user-service");
 
@@ -8,7 +9,12 @@ module.exports = {
       req.body.accessToken
     );
 
+    if (googleResponse.hasOwnProperty("error")) {
+      next(new BadRequest("Invalid token or credentials"));
+    }
+
     const user = {
+      name: googleResponse.data.email.split("@")[0],
       email: googleResponse.data.email,
     };
 
