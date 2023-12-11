@@ -4,19 +4,21 @@ const BadRequest = require("../exceptions/bad-request");
 const { MONGO_DUP_INDEX_ERROR_CODE } = require("../helpers/constant");
 
 module.exports = {
-  save: async (req, res, next) => {
+  save: async (user) => {
     try {
-      const user = new User(req.body);
-      const newUser = await user.save();
+      const isUserExists = await User.findOne({ email: user.email });
 
-      return res
-        .status(201)
-        .send(new GenericResponse("User has been saved successfully", newUser));
+      if (isUserExists) {
+        return isUserExists;
+      } else {
+        const user = new User(user);
+        const newUser = await user.save();
+
+        return newUser;
+      }
     } catch (error) {
       if (error.code === MONGO_DUP_INDEX_ERROR_CODE) {
-        next(
-          new BadRequest("User already exists by this email: " + req.body.email)
-        );
+        next(new BadRequest("User already exists by this email: " + user));
       } else {
         next(new BadRequest(error));
       }
