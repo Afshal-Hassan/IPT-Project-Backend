@@ -1,3 +1,4 @@
+const GenericResponse = require("../dto/generic-response");
 const authService = require("../services/auth-service");
 
 module.exports = {
@@ -11,6 +12,12 @@ module.exports = {
       exp: googleResponse.data.exp,
       expiresIn: googleResponse.data.expires_in,
     });
-    const response = await authService.extractUserDetailsFromToken(token);
+    res
+      .status(200)
+      .send(
+        new GenericResponse("User has been successfully logged in", {
+          token: token,
+        })
+      );
   },
 };
