@@ -77,10 +77,7 @@ io.on("connection", (socket) => {
         if (limit.count > MAX_MESSAGES_PER_MINUTE) {
           // Too Many Requests error
 
-          socket.to(data.room).emit("error-message", {
-            error: "Too Many Requests",
-            messageSender: data.messageSender,
-          });
+          socket.to(data.room).emit("error-message", data);
           return;
         }
 
