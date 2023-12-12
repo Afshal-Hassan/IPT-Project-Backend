@@ -77,8 +77,6 @@ io.on("connection", (socket) => {
         if (limit.count > MAX_MESSAGES_PER_MINUTE) {
           // Too Many Requests error
 
-          console.log("YES");
-          console.log(data.room);
           socket.to(data.room).emit("error", {
             error: "Too Many Requests",
             messageSender: data.messageSender,
@@ -88,8 +86,6 @@ io.on("connection", (socket) => {
 
         // Increment the count
         limit.count++;
-
-        console.log("check");
 
         socket.to(data.room).emit("receive-message", data);
         const req = {
