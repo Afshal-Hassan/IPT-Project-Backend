@@ -5,6 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const error = require("./middlewares/error-handler");
+const rateLimiter = require("./config/rate-limit");
 
 const io = new Server(server, {
   cors: {
@@ -22,6 +23,7 @@ require("./db/conn");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(rateLimiter);
 
 app.use(
   cors({
@@ -48,7 +50,12 @@ app.get("/api/hello", (req, res) => {
   res.send("App Running");
 });
 
+const socketRateLimits = new Map();
+const MAX_MESSAGES_PER_MINUTE = 3;
+
 io.on("connection", (socket) => {
+  const ip = socket.handshake.address;
+
   // console.log(`User connected: ${socket.id} `);
 
   socket.on("join-room", (data) => {
@@ -56,15 +63,42 @@ io.on("connection", (socket) => {
   });
 
   socket.on("send-message", (data) => {
-    socket.to(data.room).emit("receive-message", data);
-    const req = {
-      body: {
-        message: data.message,
-        user1Id: data.messageSender,
-        user2Id: data.messageReceiver,
-      },
-    };
-    messageController.save(req);
+    if (!socketRateLimits.has(ip)) {
+      socketRateLimits.set(ip, { count: 1, timestamp: Date.now() });
+    } else {
+      const limit = socketRateLimits.get(ip);
+      const currentTime = Date.now();
+      // Reset the count if it's been more than a minute
+      if (currentTime - limit.timestamp > 60000) {
+        limit.count = 1;
+        limit.timestamp = currentTime;
+      } else {
+        // Check if the count exceeds the limit
+        if (limit.count > MAX_MESSAGES_PER_MINUTE) {
+          // Too Many Requests error
+          socket.to(data.room).emit("error", {
+            error: "Too Many Requests",
+            messageSender: data.messageSender,
+          });
+          return;
+        }
+
+        // Increment the count
+        limit.count++;
+
+        console.log("check");
+
+        socket.to(data.room).emit("receive-message", data);
+        const req = {
+          body: {
+            message: data.message,
+            user1Id: data.messageSender,
+            user2Id: data.messageReceiver,
+          },
+        };
+        messageController.save(req);
+      }
+    }
   });
 });
 
