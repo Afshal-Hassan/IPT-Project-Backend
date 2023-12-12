@@ -22,7 +22,7 @@ module.exports = {
       }).populate({
         path: "friendId",
         model: "users",
-        select: "name email country phoneNo",
+        select: "name email profilePic",
       });
 
       return res
