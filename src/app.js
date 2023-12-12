@@ -69,7 +69,7 @@ io.on("connection", (socket) => {
       const limit = socketRateLimits.get(ip);
       const currentTime = Date.now();
       // Reset the count if it's been more than a minute
-      if (currentTime - limit.timestamp > 60000) {
+      if (currentTime - limit.timestamp > 5 * 60000) {
         limit.count = 1;
         limit.timestamp = currentTime;
       } else {
