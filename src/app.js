@@ -56,6 +56,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("send-message", (data) => {
+    console.log(data.room);
     socket.to(data.room).emit("receive-message", data);
     const req = {
       body: {
