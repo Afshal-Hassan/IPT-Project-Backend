@@ -62,7 +62,7 @@ io.on("connection", (socket) => {
     socket.join(data);
   });
 
-  socket.on("send-message", (data, callback) => {
+  socket.on("send-message", (data) => {
     if (!socketRateLimits.has(ip)) {
       socketRateLimits.set(ip, { count: 1, timestamp: Date.now() });
     } else {
@@ -77,9 +77,8 @@ io.on("connection", (socket) => {
         if (limit.count > MAX_MESSAGES_PER_MINUTE) {
           // Too Many Requests error
 
-          if (callback) {
-            callback("Too Many Requests");
-          }
+          socket.emit("error-message", data);
+
           return;
         }
 
