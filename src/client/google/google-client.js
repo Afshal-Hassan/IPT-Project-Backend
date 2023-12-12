@@ -6,9 +6,10 @@ module.exports = {
     try {
       const response = await axios({
         method: "GET",
-        url:
-          "https://oauth2.googleapis.com/tokeninfo?scope=email&access_token=" +
-          accessToken,
+        url: "https://www.googleapis.com/oauth2/v2/userinfo",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
       return response;

@@ -16,18 +16,12 @@ module.exports = {
       const user2Id = req.params.user2Id;
 
       const privateRoom = await PrivateRoom.find({
-        $or: [
+        $and: [
           {
-            user1Id: user1Id,
+            $or: [{ user1Id: user1Id }, { user1Id: user2Id }],
           },
           {
-            user1d: user2Id,
-          },
-          {
-            user2Id: user1Id,
-          },
-          {
-            user2Id: user2Id,
+            $or: [{ user2Id: user1Id }, { user2Id: user2Id }],
           },
         ],
       });
