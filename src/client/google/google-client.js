@@ -2,13 +2,14 @@ const axios = require("axios");
 const BadRequest = require("../../exceptions/bad-request");
 
 module.exports = {
-  verifyTokenFromGoogle: async (idToken) => {
+  verifyTokenFromGoogle: async (accessToken) => {
     try {
       const response = await axios({
         method: "GET",
-        url:
-          "https://oauth2.googleapis.com/tokeninfo?scope=email&id_token=" +
-          idToken,
+        url: "https://www.googleapis.com/oauth2/v2/userinfo",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
       return response;

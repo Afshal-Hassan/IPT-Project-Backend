@@ -3,7 +3,7 @@ const { body, validationResult } = require("express-validator");
 const BadRequest = require("../exceptions/bad-request");
 
 const validateFriendForAuth = [
-  body("idToken").notEmpty().withMessage("Id Token is required"),
+  body("accessToken").notEmpty().withMessage("Id Token is required"),
 
   (req, res, next) => {
     const errors = validationResult(req);

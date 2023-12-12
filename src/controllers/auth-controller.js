@@ -6,7 +6,7 @@ const userService = require("../services/user-service");
 module.exports = {
   login: async (req, res, next) => {
     const googleResponse = await authService.verifyTokenOfGoogleSSO(
-      req.body.idToken
+      req.body.accessToken
     );
 
     if (googleResponse.status === 400) {
