@@ -2,8 +2,8 @@ const googleClient = require("../client/google/google-client");
 const utils = require("../helpers/utils");
 
 module.exports = {
-  verifyTokenOfGoogleSSO: async (accessToken) => {
-    return googleClient.verifyTokenFromGoogle(accessToken);
+  verifyTokenOfGoogleSSO: async (idToken) => {
+    return googleClient.verifyTokenFromGoogle(idToken);
   },
 
   signUpIfUserNotExists: async (user) => {},

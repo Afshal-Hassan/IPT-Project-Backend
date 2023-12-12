@@ -10,6 +10,10 @@ const userSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
+
+  profilePic: {
+    type: String,
+  },
 });
 
 const user = new mongoose.model("users", userSchema);

@@ -6,23 +6,16 @@ const userService = require("../services/user-service");
 module.exports = {
   login: async (req, res, next) => {
     const googleResponse = await authService.verifyTokenOfGoogleSSO(
-      req.body.accessToken
+      req.body.idToken
     );
 
     if (googleResponse.status === 400) {
       next(new BadRequest("Invalid token or credentials"));
     } else {
-      const name = googleResponse.data.email.split("@")[0];
-      const cleanedUsername = name
-        .replace(/[_\.]/g, " ")
-        .replace(
-          /\w\S*/g,
-          (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-        );
-
       const user = {
-        name: cleanedUsername,
+        name: googleResponse.data.name,
         email: googleResponse.data.email,
+        profilePic: googleResponse.data.picture,
       };
 
       const savedUser = await userService.save(user);
@@ -30,6 +23,8 @@ module.exports = {
       const token = await authService.generateJwtToken({
         userId: savedUser._id,
         email: googleResponse.data.email,
+        name: googleResponse.data.name,
+        profilePic: googleResponse.data.picture,
         emailVerified: googleResponse.data.email_verified,
       });
 
