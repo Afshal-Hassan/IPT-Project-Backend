@@ -51,7 +51,7 @@ app.get("/api/hello", (req, res) => {
 });
 
 const socketRateLimits = new Map();
-const MAX_MESSAGES_PER_MINUTE = 3;
+const MAX_MESSAGES_PER_MINUTE = 50;
 
 io.on("connection", (socket) => {
   const ip = socket.handshake.address;
