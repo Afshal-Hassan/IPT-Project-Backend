@@ -78,7 +78,8 @@ io.on("connection", (socket) => {
           // Too Many Requests error
 
           socket.to(data.room).emit("error-message", data);
-          return;
+
+          return "Too Many Requests";
         }
 
         // Increment the count
